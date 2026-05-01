@@ -1,4 +1,4 @@
-import { prisma } from "../config/db.js";
+import { ActivityLog } from "../models/index.js";
 
 export const logActivity = async ({
   workspaceId,
@@ -11,16 +11,14 @@ export const logActivity = async ({
 }) => {
   try {
     if (!workspaceId) throw new Error("workspaceId is required for activity logging");
-    await prisma.activityLog.create({
-      data: {
-        workspaceId,
-        action,
-        entityType,
-        entityId: String(entityId),
-        projectId: projectId ? String(projectId) : null,
-        performedBy: String(performedBy),
-        metadata: JSON.stringify(metadata),
-      },
+    await ActivityLog.create({
+      workspaceId,
+      action,
+      entityType,
+      entityId: String(entityId),
+      projectId: projectId || null,
+      performedBy,
+      metadata,
     });
   } catch (error) {
     console.error("Activity log failed:", error.message);

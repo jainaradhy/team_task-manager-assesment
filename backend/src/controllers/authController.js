@@ -1,23 +1,24 @@
 import bcrypt from "bcryptjs";
-import { prisma } from "../config/db.js";
+import { User, Workspace, WorkspaceMember } from "../models/index.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { generateToken } from "../utils/generateToken.js";
 import { AppError } from "../utils/appError.js";
+import { idOf } from "../utils/formatters.js";
 
 const sanitizeUser = (user, role, workspaceId) => ({
-  id: user.id,
-  _id: user.id, // For frontend compatibility
+  id: idOf(user),
+  _id: idOf(user),
   name: user.name,
   email: user.email,
   role: role,
-  workspaceId: workspaceId,
+  workspaceId: idOf(workspaceId),
   createdAt: user.createdAt,
 });
 
 export const signup = asyncHandler(async (req, res) => {
   const { name, email, password, companyName } = req.body;
 
-  const existingUser = await prisma.user.findUnique({ where: { email } });
+  const existingUser = await User.findOne({ email });
   if (existingUser) {
     throw new AppError("Email is already registered", 409);
   }
@@ -25,53 +26,36 @@ export const signup = asyncHandler(async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 12);
   const wName = companyName || `${name}'s Workspace`;
 
-  // Transaction: Create User, Workspace, and link them as Owner
-  const result = await prisma.$transaction(async (tx) => {
-    const user = await tx.user.create({
-      data: { name, email, password: hashedPassword },
-    });
-
-    const workspace = await tx.workspace.create({
-      data: { name: wName },
-    });
-
-    const member = await tx.workspaceMember.create({
-      data: {
-        userId: user.id,
-        workspaceId: workspace.id,
-        role: "Admin", // Admin acts as the Owner for the SaaS UI
-      },
-    });
-
-    return { user, workspace, member };
+  const user = await User.create({ name, email, password: hashedPassword });
+  const workspace = await Workspace.create({ name: wName });
+  const member = await WorkspaceMember.create({
+    userId: user._id,
+    workspaceId: workspace._id,
+    role: "Admin",
   });
 
   const token = generateToken({ 
-    id: result.user.id, 
-    role: result.member.role,
-    workspaceId: result.workspace.id 
+    id: idOf(user),
+    role: member.role,
+    workspaceId: idOf(workspace),
   });
 
   res.status(201).json({
     message: "Account and Workspace created successfully",
     token,
-    user: sanitizeUser(result.user, result.member.role, result.workspace.id),
+    user: sanitizeUser(user, member.role, workspace),
   });
 });
 
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await prisma.user.findUnique({ 
-    where: { email },
-    include: {
-      workspaces: {
-        take: 1 // For now, we assume user has 1 primary workspace
-      }
-    }
-  });
+  const user = await User.findOne({ email });
+  const primaryWorkspace = user
+    ? await WorkspaceMember.findOne({ userId: user._id }).sort({ createdAt: 1 })
+    : null;
 
-  if (!user || user.workspaces.length === 0) {
+  if (!user || !primaryWorkspace) {
     throw new AppError("Invalid email or password", 401);
   }
 
@@ -80,11 +64,10 @@ export const login = asyncHandler(async (req, res) => {
     throw new AppError("Invalid email or password", 401);
   }
 
-  const primaryWorkspace = user.workspaces[0];
   const token = generateToken({ 
-    id: user.id, 
+    id: idOf(user),
     role: primaryWorkspace.role,
-    workspaceId: primaryWorkspace.workspaceId
+    workspaceId: idOf(primaryWorkspace.workspaceId),
   });
 
   res.json({

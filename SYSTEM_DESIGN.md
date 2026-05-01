@@ -10,7 +10,7 @@ The application is built using a modern decoupled architecture consisting of a R
 
 * **Frontend:** React.js (Vite), Tailwind CSS, Context API for state management, Axios for data fetching.
 * **Backend:** Node.js, Express.js.
-* **Database:** SQLite managed via Prisma ORM.
+* **Database:** MongoDB managed via Mongoose.
 * **Authentication:** JWT (JSON Web Tokens) with Role-Based Access Control (RBAC).
 
 ### High-Level Flow Diagram
@@ -19,7 +19,7 @@ The application is built using a modern decoupled architecture consisting of a R
 graph TD
     Client[Web Browser / React Client]
     API[Express REST API]
-    DB[(SQLite Database)]
+    DB[(MongoDB Database)]
     Auth[JWT Authentication]
     
     Client -- HTTP/REST --> API
@@ -32,7 +32,7 @@ graph TD
 
 ## 2. Entity Relationship Diagram (ERD)
 
-The database follows a relational structure optimized for the Prisma ORM. 
+The database uses MongoDB collections with Mongoose schemas for validation and relationships.
 
 ```mermaid
 erDiagram
@@ -159,11 +159,11 @@ stateDiagram-v2
 ```text
 /
 ├── backend/
-│   ├── prisma/             # SQLite DB Schema
 │   ├── src/
-│   │   ├── config/         # Prisma client, seed logic
+│   │   ├── config/         # MongoDB connection, seed logic
 │   │   ├── controllers/    # Request handlers (Business Logic)
 │   │   ├── middleware/     # Auth & Error middlewares
+│   │   ├── models/         # Mongoose models
 │   │   ├── routes/         # Express route definitions
 │   │   ├── utils/          # Activity logger, helpers
 │   │   └── app.js & server.js

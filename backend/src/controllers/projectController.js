@@ -1,234 +1,187 @@
-import { prisma } from "../config/db.js";
+import { Project, ProjectTeam, Task, WorkspaceMember } from "../models/index.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
 import { AppError } from "../utils/appError.js";
 import { logActivity } from "../utils/logActivity.js";
+import { formatTask, formatUser, idOf } from "../utils/formatters.js";
+
+const getProjectTeamUsers = async (projectId) => {
+  const team = await ProjectTeam.find({ projectId }).populate("userId", "name email createdAt");
+  return team.map((member) => formatUser(member.userId));
+};
+
+const formatProject = async (project, { includeTasks = false, includeTaskCounts = false } = {}) => {
+  const creator = await project.populate("createdBy", "name email createdAt");
+  const teamMembers = await getProjectTeamUsers(project._id);
+  const plain = creator.toObject({ virtuals: true });
+
+  const formatted = {
+    ...plain,
+    id: idOf(project),
+    _id: idOf(project),
+    workspaceId: idOf(project.workspaceId),
+    createdBy: formatUser(project.createdBy),
+    teamMembers,
+  };
+
+  if (includeTaskCounts) {
+    const tasks = await Task.find({ projectId: project._id }).select("status");
+    formatted.totalTasks = tasks.length;
+    formatted.completedTasks = tasks.filter((task) => task.status === "Done").length;
+  }
+
+  if (includeTasks) {
+    const tasks = await Task.find({ projectId: project._id, workspaceId: project.workspaceId })
+      .populate("assignedTo", "name email createdAt")
+      .populate("projectId", "title")
+      .sort({ dueDate: 1 });
+    formatted.tasks = tasks.map(formatTask);
+  }
+
+  return formatted;
+};
 
 export const createProject = asyncHandler(async (req, res) => {
   if (req.user.role !== "Admin") {
     throw new AppError("Only admins can create projects", 403);
   }
+
   const { title, description, teamMembers = [] } = req.body;
   const workspaceId = req.user.workspaceId;
-
   const uniqueMemberIds = [...new Set([req.user.id, ...teamMembers])];
-  const members = await prisma.workspaceMember.findMany({
-    where: { 
-      workspaceId: workspaceId,
-      userId: { in: uniqueMemberIds } 
-    },
-    select: { userId: true }
-  });
+
+  const members = await WorkspaceMember.find({
+    workspaceId,
+    userId: { $in: uniqueMemberIds },
+  }).select("userId");
 
   if (members.length !== uniqueMemberIds.length) {
     throw new AppError("One or more team members are invalid or outside this workspace", 400);
   }
 
-  const project = await prisma.project.create({
-    data: {
-      title,
-      description,
-      workspaceId,
-      createdBy: req.user.id,
-      teamMembers: {
-        create: uniqueMemberIds.map(userId => ({ userId }))
-      }
-    },
-    include: {
-      creator: { select: { id: true, name: true, email: true } },
-      teamMembers: {
-        include: {
-          user: { select: { id: true, name: true, email: true } }
-        }
-      }
-    }
+  const project = await Project.create({
+    title,
+    description,
+    workspaceId,
+    createdBy: req.user.id,
   });
+
+  await ProjectTeam.create(uniqueMemberIds.map((userId) => ({ projectId: project._id, userId })));
 
   await logActivity({
     workspaceId,
     action: "PROJECT_CREATED",
     entityType: "Project",
-    entityId: project.id,
-    projectId: project.id,
+    entityId: idOf(project),
+    projectId: idOf(project),
     performedBy: req.user.id,
     metadata: { title: project.title },
   });
 
-  const formattedProject = {
-    ...project,
-    _id: project.id,
-    createdBy: { ...project.creator, _id: project.creator.id },
-    teamMembers: project.teamMembers.map(tm => ({ ...tm.user, _id: tm.user.id }))
-  };
-  delete formattedProject.creator;
-
-  res.status(201).json(formattedProject);
+  res.status(201).json(await formatProject(project));
 });
 
 export const getProjects = asyncHandler(async (req, res) => {
   const workspaceId = req.user.workspaceId;
-  const filter =
-    req.user.role === "Admin"
-      ? { workspaceId }
-      : { workspaceId, teamMembers: { some: { userId: req.user.id } } };
+  let projectIds = null;
 
-  const projects = await prisma.project.findMany({
-    where: filter,
-    orderBy: { createdAt: 'desc' },
-    include: {
-      tasks: { select: { id: true, status: true } },
-      creator: { select: { id: true, name: true, email: true } },
-      teamMembers: {
-        include: {
-          user: { select: { id: true, name: true, email: true } }
-        }
-      }
-    }
-  });
+  if (req.user.role !== "Admin") {
+    const team = await ProjectTeam.find({ userId: req.user.id }).select("projectId");
+    projectIds = team.map((member) => member.projectId);
+  }
 
-  const formattedProjects = projects.map((project) => ({
-    ...project,
-    _id: project.id,
-    totalTasks: project.tasks.length,
-    completedTasks: project.tasks.filter(t => t.status === "Done").length,
-    createdBy: { ...project.creator, _id: project.creator.id },
-    teamMembers: project.teamMembers.map(tm => ({ ...tm.user, _id: tm.user.id }))
-  }));
+  const filter = req.user.role === "Admin"
+    ? { workspaceId }
+    : { workspaceId, _id: { $in: projectIds } };
+
+  const projects = await Project.find(filter).sort({ createdAt: -1 });
+  const formattedProjects = await Promise.all(
+    projects.map((project) => formatProject(project, { includeTaskCounts: true }))
+  );
 
   res.json(formattedProjects);
 });
 
 export const getProjectById = asyncHandler(async (req, res) => {
   const workspaceId = req.user.workspaceId;
-  const project = await prisma.project.findFirst({
-    where: { id: req.params.id, workspaceId },
-    include: {
-      creator: { select: { id: true, name: true, email: true } },
-      teamMembers: {
-        include: {
-          user: { select: { id: true, name: true, email: true } }
-        }
-      }
-    }
-  });
+  const project = await Project.findOne({ _id: req.params.id, workspaceId });
 
   if (!project) {
     throw new AppError("Project not found", 404);
   }
 
-  const hasAccess =
-    req.user.role === "Admin" ||
-    project.teamMembers.some((member) => member.userId === req.user.id);
+  const membership = await ProjectTeam.exists({ projectId: project._id, userId: req.user.id });
+  const hasAccess = req.user.role === "Admin" || membership;
 
   if (!hasAccess) {
     throw new AppError("You do not have access to this project", 403);
   }
 
-  const tasks = await prisma.task.findMany({
-    where: { projectId: project.id, workspaceId },
-    include: {
-      assignee: { select: { id: true, name: true, email: true } }
-    },
-    orderBy: { dueDate: 'asc' }
-  });
-
-  const formattedProject = {
-    ...project,
-    _id: project.id,
-    createdBy: { ...project.creator, _id: project.creator.id },
-    teamMembers: project.teamMembers.map(tm => ({ ...tm.user, _id: tm.user.id })),
-    tasks: tasks.map(t => ({
-      ...t,
-      _id: t.id,
-      assignedTo: { ...t.assignee, _id: t.assignee.id }
-    }))
-  };
-
-  res.json(formattedProject);
+  res.json(await formatProject(project, { includeTasks: true }));
 });
 
 export const updateProjectMembers = asyncHandler(async (req, res) => {
   if (req.user.role !== "Admin") {
     throw new AppError("Only admins can update project members", 403);
   }
+
   const { teamMembers } = req.body;
   const workspaceId = req.user.workspaceId;
-  const project = await prisma.project.findFirst({
-    where: { id: req.params.id, workspaceId }
-  });
+  const project = await Project.findOne({ _id: req.params.id, workspaceId });
 
   if (!project) {
     throw new AppError("Project not found", 404);
   }
 
-  const uniqueMemberIds = [...new Set([project.createdBy, ...teamMembers])];
-  const members = await prisma.workspaceMember.findMany({
-    where: { workspaceId, userId: { in: uniqueMemberIds } },
-    select: { userId: true }
-  });
+  const uniqueMemberIds = [...new Set([idOf(project.createdBy), ...teamMembers])];
+  const members = await WorkspaceMember.find({
+    workspaceId,
+    userId: { $in: uniqueMemberIds },
+  }).select("userId");
 
   if (members.length !== uniqueMemberIds.length) {
     throw new AppError("One or more team members are invalid", 400);
   }
 
-  // Transaction to update members
-  await prisma.$transaction([
-    prisma.projectTeam.deleteMany({ where: { projectId: project.id } }),
-    prisma.projectTeam.createMany({
-      data: uniqueMemberIds.map(userId => ({ projectId: project.id, userId }))
-    })
-  ]);
+  await ProjectTeam.deleteMany({ projectId: project._id });
+  await ProjectTeam.create(uniqueMemberIds.map((userId) => ({ projectId: project._id, userId })));
 
   await logActivity({
     workspaceId,
     action: "PROJECT_MEMBERS_UPDATED",
     entityType: "Project",
-    entityId: project.id,
-    projectId: project.id,
+    entityId: idOf(project),
+    projectId: idOf(project),
     performedBy: req.user.id,
     metadata: { teamMembers: uniqueMemberIds },
   });
 
-  const updatedProject = await prisma.project.findUnique({
-    where: { id: project.id },
-    include: {
-      creator: { select: { id: true, name: true, email: true } },
-      teamMembers: {
-        include: {
-          user: { select: { id: true, name: true, email: true } }
-        }
-      }
-    }
-  });
-
-  res.json({
-    ...updatedProject,
-    _id: updatedProject.id,
-    createdBy: { ...updatedProject.creator, _id: updatedProject.creator.id },
-    teamMembers: updatedProject.teamMembers.map(tm => ({ ...tm.user, _id: tm.user.id }))
-  });
+  res.json(await formatProject(project));
 });
 
 export const deleteProject = asyncHandler(async (req, res) => {
   if (req.user.role !== "Admin") {
     throw new AppError("Only admins can delete projects", 403);
   }
+
   const workspaceId = req.user.workspaceId;
-  const project = await prisma.project.findFirst({
-    where: { id: req.params.id, workspaceId }
-  });
+  const project = await Project.findOne({ _id: req.params.id, workspaceId });
 
   if (!project) {
     throw new AppError("Project not found", 404);
   }
 
-  await prisma.project.delete({ where: { id: project.id } });
+  await Promise.all([
+    Project.deleteOne({ _id: project._id }),
+    ProjectTeam.deleteMany({ projectId: project._id }),
+    Task.deleteMany({ projectId: project._id }),
+  ]);
 
   await logActivity({
     workspaceId,
     action: "PROJECT_DELETED",
     entityType: "Project",
-    entityId: project.id,
-    projectId: project.id,
+    entityId: idOf(project),
+    projectId: idOf(project),
     performedBy: req.user.id,
     metadata: { title: project.title },
   });

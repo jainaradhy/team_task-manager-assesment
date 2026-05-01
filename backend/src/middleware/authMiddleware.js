@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
-import { prisma } from "../config/db.js";
+import { WorkspaceMember } from "../models/index.js";
+import { formatUser, idOf } from "../utils/formatters.js";
 
 export const protect = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -14,28 +15,22 @@ export const protect = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
     // Ensure the user actually belongs to this workspace and is active
-    const member = await prisma.workspaceMember.findUnique({
-      where: {
-        workspaceId_userId: {
-          workspaceId: decoded.workspaceId,
-          userId: decoded.id
-        }
-      },
-      include: {
-        user: { select: { id: true, name: true, email: true, createdAt: true } }
-      }
-    });
+    const member = await WorkspaceMember.findOne({
+      workspaceId: decoded.workspaceId,
+      userId: decoded.id,
+    }).populate("userId", "name email createdAt");
 
-    if (!member) {
+    if (!member || !member.userId) {
       return res.status(401).json({ message: "Workspace access denied or user no longer exists" });
     }
 
+    const user = formatUser(member.userId);
+
     // Attach user and active workspace context to the request
     req.user = { 
-      ...member.user, 
-      _id: member.user.id,
+      ...user,
       role: member.role,
-      workspaceId: member.workspaceId
+      workspaceId: idOf(member.workspaceId),
     };
     next();
   } catch (error) {

@@ -1,17 +1,19 @@
-import { PrismaClient } from "@prisma/client";
-
-export const prisma = new PrismaClient();
+import mongoose from "mongoose";
 
 export const connectDatabase = async () => {
   try {
-    await prisma.$connect();
-    console.log("✅ Prisma SQLite connected successfully");
+    if (!process.env.MONGODB_URI) {
+      throw new Error("MONGODB_URI is not defined");
+    }
+
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("✅ MongoDB connected");
   } catch (error) {
-    console.error("❌ Prisma connection failed:", error.message);
+    console.error("❌ MongoDB connection failed:", error.message);
     process.exit(1);
   }
 };
 
 export const disconnectDatabase = async () => {
-  await prisma.$disconnect();
+  await mongoose.disconnect();
 };

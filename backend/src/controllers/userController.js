@@ -1,28 +1,14 @@
-import { prisma } from "../config/db.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
+import { WorkspaceMember } from "../models/index.js";
+import { formatUser } from "../utils/formatters.js";
 
 export const getUsers = asyncHandler(async (req, res) => {
   const workspaceId = req.user.workspaceId;
-  const members = await prisma.workspaceMember.findMany({
-    where: { workspaceId },
-    include: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          createdAt: true,
-        }
-      }
-    },
-    orderBy: {
-      user: { createdAt: 'desc' }
-    }
-  });
+  const members = await WorkspaceMember.find({ workspaceId }).populate("userId", "name email createdAt");
+  members.sort((a, b) => new Date(b.userId.createdAt) - new Date(a.userId.createdAt));
   
   res.json(members.map(m => ({ 
-    ...m.user, 
-    _id: m.user.id,
+    ...formatUser(m.userId),
     role: m.role 
   })));
 });

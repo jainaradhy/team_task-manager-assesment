@@ -22,21 +22,18 @@ Once the project is created, Railway will likely detect the root. We want to con
 
 1. **Rename Service:** Click on the generated service and rename it to `backend`.
 2. **Root Directory:** In **Settings**, set the "Root Directory" to `backend`.
-3. **Build Command:** `npm install && npx prisma generate`
+3. **Build Command:** `npm install`
 4. **Start Command:** `npm start`
 5. **Variables:** Go to the **Variables** tab and add:
    - `PORT`: `5001`
    - `JWT_SECRET`: `your_super_secret_key_here`
-   - `DATABASE_URL`: `file:./dev.db`
+   - `MONGODB_URI`: your MongoDB Atlas or Railway MongoDB connection string
    - `JWT_EXPIRES_IN`: `7d`
    - `NODE_ENV`: `production`
 
 > [!IMPORTANT]
-> **Persistence for SQLite:** 
-> By default, Railway's file system is ephemeral. If you want your `dev.db` to survive restarts, you must:
-> 1. Go to **Settings** → **Volumes**.
-> 2. Create a Volume and mount it to `/app/prisma/` (or wherever your `.db` file lives).
-> 3. *Note: For professional production, consider adding a MongoDB or PostgreSQL service in Railway and updating your `DATABASE_URL`.*
+> **MongoDB Required:** 
+> The backend now connects only through `MONGODB_URI`. Use MongoDB Atlas, Railway MongoDB, or another MongoDB-compatible service.
 
 ---
 

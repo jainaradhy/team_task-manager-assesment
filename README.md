@@ -18,7 +18,7 @@ A production-ready, multi-tenant B2B Task Management platform built for high-per
 
 * **Frontend:** React.js (Vite), Tailwind CSS, Framer Motion, Lucide Icons
 * **Backend:** Node.js, Express.js
-* **Database:** SQLite (Relational) via Prisma ORM
+* **Database:** MongoDB via Mongoose
 * **Security:** JWT Auth with Bcrypt hashing, Helmet.js for header protection
 
 ---
@@ -42,9 +42,8 @@ cd backend
 npm install
 # Create .env with:
 # PORT=5001
-# DATABASE_URL="file:./dev.db"
+# MONGODB_URI=mongodb://localhost:27017/team-task-manager
 # JWT_SECRET="your-secret"
-npx prisma db push
 npm run dev
 ```
 
@@ -84,4 +83,3 @@ See the detailed **[DEPLOYMENT.md](./DEPLOYMENT.md)** file for a step-by-step gu
 
 ### 👨‍💻 Note for Recruiters
 This project was built with a focus on **Clean Architecture**, **Responsive Design**, and **Security**. The frontend avoids generic templates, favoring a custom-crafted design system built with Tailwind CSS.
-

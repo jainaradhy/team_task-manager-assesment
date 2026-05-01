@@ -6,7 +6,7 @@ This script is designed to impress recruiters by highlighting the UI quality, mu
 
 ### [0:00 - 0:15] Introduction & Login
 *(Screen shows the Login page)*
-**"Hi, this is my Team Task Manager application. It's built with React, Node.js, and a Prisma-managed SQL database. Let me log in as the Workspace Admin for Acme Corporation."**
+**"Hi, this is my Team Task Manager application. It's built with React, Node.js, and MongoDB through Mongoose. Let me log in as the Workspace Admin for Acme Corporation."**
 *(Log in using `admin@acme.dev` / `Admin@1234`)*
 
 ### [0:15 - 0:45] The Dashboard
