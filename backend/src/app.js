@@ -29,11 +29,27 @@ app.get("/api/health", (req, res) => {
   res.json({ message: "API is running" });
 });
 
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+
+// Production: Serve static assets from frontend
+if (process.env.NODE_ENV === "production") {
+  const frontendPath = path.join(__dirname, "../../frontend/dist");
+  app.use(express.static(frontendPath));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(frontendPath, "index.html"));
+  });
+}
 
 app.use(notFound);
 app.use(errorHandler);
