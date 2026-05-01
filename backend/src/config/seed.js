@@ -13,7 +13,7 @@ export const seedDemoData = async () => {
 
     // Create a demo workspace
     const workspace = await prisma.workspace.create({
-      data: { name: "Acme Corporation" }
+      data: { name: "Bharat Tech Solutions" }
     });
 
     const adminHash = await bcrypt.hash("Admin@1234", 12);
@@ -21,8 +21,8 @@ export const seedDemoData = async () => {
 
     const admin = await prisma.user.create({
       data: {
-        name: "Alex Admin",
-        email: "admin@acme.dev",
+        name: "Aradhy Jain",
+        email: "aradhy@bharat.dev",
         password: adminHash,
         workspaces: {
           create: { workspaceId: workspace.id, role: "Admin" }
@@ -30,10 +30,10 @@ export const seedDemoData = async () => {
       }
     });
 
-    const alice = await prisma.user.create({
+    const rahul = await prisma.user.create({
       data: {
-        name: "Alice Dev",
-        email: "alice@acme.dev",
+        name: "Rahul Sharma",
+        email: "rahul@bharat.dev",
         password: memberHash,
         workspaces: {
           create: { workspaceId: workspace.id, role: "Member" }
@@ -41,10 +41,10 @@ export const seedDemoData = async () => {
       }
     });
 
-    const bob = await prisma.user.create({
+    const priya = await prisma.user.create({
       data: {
-        name: "Bob Designer",
-        email: "bob@acme.dev",
+        name: "Priya Patel",
+        email: "priya@bharat.dev",
         password: memberHash,
         workspaces: {
           create: { workspaceId: workspace.id, role: "Member" }
@@ -59,7 +59,7 @@ export const seedDemoData = async () => {
         workspaceId: workspace.id,
         createdBy: admin.id,
         teamMembers: {
-          create: [{ userId: admin.id }, { userId: alice.id }, { userId: bob.id }]
+          create: [{ userId: admin.id }, { userId: rahul.id }, { userId: priya.id }]
         }
       }
     });
@@ -71,7 +71,7 @@ export const seedDemoData = async () => {
         workspaceId: workspace.id,
         createdBy: admin.id,
         teamMembers: {
-          create: [{ userId: admin.id }, { userId: alice.id }]
+          create: [{ userId: admin.id }, { userId: rahul.id }]
         }
       }
     });
@@ -86,7 +86,7 @@ export const seedDemoData = async () => {
           description: "Define color, spacing, typography, and shape tokens in Figma and export to code.",
           workspaceId: workspace.id,
           projectId: project1.id,
-          assignedTo: alice.id,
+          assignedTo: rahul.id,
           status: "Done",
           dueDate: inDays(-3),
         },
@@ -95,7 +95,7 @@ export const seedDemoData = async () => {
           description: "Build reusable React components following the new design system.",
           workspaceId: workspace.id,
           projectId: project1.id,
-          assignedTo: alice.id,
+          assignedTo: rahul.id,
           status: "In Progress",
           dueDate: inDays(5),
         },
@@ -104,7 +104,7 @@ export const seedDemoData = async () => {
           description: "Audit all pages on mobile, tablet, and desktop viewports and fix breakpoints.",
           workspaceId: workspace.id,
           projectId: project1.id,
-          assignedTo: bob.id,
+          assignedTo: priya.id,
           status: "Todo",
           dueDate: inDays(7),
         },
@@ -113,7 +113,7 @@ export const seedDemoData = async () => {
           description: "Implement dark mode using Tailwind's dark: modifier across all components.",
           workspaceId: workspace.id,
           projectId: project1.id,
-          assignedTo: bob.id,
+          assignedTo: priya.id,
           status: "Todo",
           dueDate: inDays(10),
         },
@@ -122,7 +122,7 @@ export const seedDemoData = async () => {
           description: "Integrate Google OAuth2 into the authentication service.",
           workspaceId: workspace.id,
           projectId: project2.id,
-          assignedTo: alice.id,
+          assignedTo: rahul.id,
           status: "In Progress",
           dueDate: inDays(3),
         },
@@ -131,8 +131,8 @@ export const seedDemoData = async () => {
 
     console.log("✅ Demo seed complete!");
     console.log(`   🏢 Workspace: ${workspace.name}`);
-    console.log("   👤 admin@acme.dev  / Admin@1234  (Admin)");
-    console.log("   👤 alice@acme.dev  / Member@1234 (Member)");
+    console.log("   👤 aradhy@bharat.dev / Admin@1234  (Admin)");
+    console.log("   👤 rahul@bharat.dev  / Member@1234 (Member)");
   } catch (error) {
     console.error("⚠️  Seed failed (non-fatal):", error.message);
   }

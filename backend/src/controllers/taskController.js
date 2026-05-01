@@ -11,6 +11,9 @@ const canAccessProject = async (projectId, userId, workspaceId) => {
 };
 
 export const createTask = asyncHandler(async (req, res) => {
+  if (req.user.role !== "Admin") {
+    throw new AppError("Only admins can create tasks", 403);
+  }
   const { title, description, projectId, assignedTo, dueDate, status, priority } = req.body;
   const workspaceId = req.user.workspaceId;
 
@@ -154,6 +157,9 @@ export const updateTask = asyncHandler(async (req, res) => {
 });
 
 export const deleteTask = asyncHandler(async (req, res) => {
+  if (req.user.role !== "Admin") {
+    throw new AppError("Only admins can delete tasks", 403);
+  }
   const workspaceId = req.user.workspaceId;
   const task = await prisma.task.findFirst({ where: { id: req.params.id, workspaceId } });
   if (!task) throw new AppError("Task not found", 404);

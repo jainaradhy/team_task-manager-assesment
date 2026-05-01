@@ -94,7 +94,7 @@ const ProjectsPage = () => {
         <div className="space-y-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-500">Projects</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-600">Projects</p>
               <h1 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">Team delivery hub</h1>
               <p className="mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-300">
                 Track progress, manage membership, and jump into project-specific execution from a single view.

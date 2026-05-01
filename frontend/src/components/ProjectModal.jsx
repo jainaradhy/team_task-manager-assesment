@@ -56,7 +56,7 @@ const ProjectModal = ({ isOpen, onClose, onSubmit, users }) => {
             {users.map((member) => (
               <label
                 key={member._id}
-                className="flex cursor-pointer items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-700"
+                className="flex cursor-pointer items-center justify-between rounded-lg border border-slate-200 px-4 py-3 dark:border-slate-700"
               >
                 <span>
                   <span className="block text-sm font-semibold">{member.name}</span>
@@ -66,7 +66,7 @@ const ProjectModal = ({ isOpen, onClose, onSubmit, users }) => {
                   type="checkbox"
                   checked={form.teamMembers.includes(member._id)}
                   onChange={() => handleMemberToggle(member._id)}
-                  className="rounded border-slate-300 text-brand-500 focus:ring-brand-500"
+                  className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-600"
                 />
               </label>
             ))}

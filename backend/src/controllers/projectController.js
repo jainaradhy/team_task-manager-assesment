@@ -4,6 +4,9 @@ import { AppError } from "../utils/appError.js";
 import { logActivity } from "../utils/logActivity.js";
 
 export const createProject = asyncHandler(async (req, res) => {
+  if (req.user.role !== "Admin") {
+    throw new AppError("Only admins can create projects", 403);
+  }
   const { title, description, teamMembers = [] } = req.body;
   const workspaceId = req.user.workspaceId;
 
@@ -144,6 +147,9 @@ export const getProjectById = asyncHandler(async (req, res) => {
 });
 
 export const updateProjectMembers = asyncHandler(async (req, res) => {
+  if (req.user.role !== "Admin") {
+    throw new AppError("Only admins can update project members", 403);
+  }
   const { teamMembers } = req.body;
   const workspaceId = req.user.workspaceId;
   const project = await prisma.project.findFirst({
@@ -203,6 +209,9 @@ export const updateProjectMembers = asyncHandler(async (req, res) => {
 });
 
 export const deleteProject = asyncHandler(async (req, res) => {
+  if (req.user.role !== "Admin") {
+    throw new AppError("Only admins can delete projects", 403);
+  }
   const workspaceId = req.user.workspaceId;
   const project = await prisma.project.findFirst({
     where: { id: req.params.id, workspaceId }

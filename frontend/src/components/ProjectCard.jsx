@@ -11,7 +11,7 @@ const ProjectCard = ({ project, canManage, onOpen, onDelete, onManageMembers }) 
         <button
           type="button"
           onClick={() => onDelete(project)}
-          className="rounded-2xl p-2 text-rose-500 transition hover:bg-rose-50 dark:hover:bg-rose-500/10"
+          className="rounded-lg p-2 text-rose-500 transition hover:bg-rose-50 dark:hover:bg-rose-500/10"
         >
           <Trash2 size={18} />
         </button>
@@ -19,11 +19,11 @@ const ProjectCard = ({ project, canManage, onOpen, onDelete, onManageMembers }) 
     </div>
 
     <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
-      <div className="rounded-2xl bg-slate-100 px-4 py-3 dark:bg-slate-800">
+      <div className="rounded-lg bg-slate-100 px-4 py-3 dark:bg-slate-800">
         <p className="text-slate-500 dark:text-slate-400">Tasks</p>
         <p className="mt-1 text-xl font-bold text-slate-900 dark:text-white">{project.totalTasks}</p>
       </div>
-      <div className="rounded-2xl bg-slate-100 px-4 py-3 dark:bg-slate-800">
+      <div className="rounded-lg bg-slate-100 px-4 py-3 dark:bg-slate-800">
         <p className="text-slate-500 dark:text-slate-400">Done</p>
         <p className="mt-1 text-xl font-bold text-slate-900 dark:text-white">{project.completedTasks}</p>
       </div>

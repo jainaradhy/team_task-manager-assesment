@@ -59,6 +59,8 @@ model Project {
   teamMembers   ProjectTeam[]
   tasks         Task[]
   activityLogs  ActivityLog[]
+
+  @@index([workspaceId])
 }
 
 model ProjectTeam {
@@ -87,6 +89,10 @@ model Task {
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
   assignee    User     @relation("TaskAssignee", fields: [assignedTo], references: [id])
+
+  @@index([workspaceId])
+  @@index([projectId])
+  @@index([assignedTo])
 }
 
 model ActivityLog {
@@ -103,4 +109,7 @@ model ActivityLog {
   workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   project     Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   user        User     @relation("ActivityLogUser", fields: [performedBy], references: [id])
+
+  @@index([workspaceId])
+  @@index([projectId])
 }

@@ -25,10 +25,10 @@ const SignupPage = () => {
   return (
     <div className="page-shell flex min-h-screen items-center justify-center p-4">
       <div className="glass-panel w-full max-w-2xl p-8 sm:p-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-accent-500">Create Account</p>
-        <h1 className="mt-4 text-3xl font-extrabold text-slate-900 dark:text-white">Join Team Task Manager</h1>
+        <p className="text-xs font-bold uppercase tracking-wider text-indigo-600">Create Account</p>
+        <h1 className="mt-4 text-3xl font-extrabold text-slate-900 dark:text-white">Get started with TaskManager</h1>
         <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-          Create your workspace and start managing projects today.
+          Provision your secure workspace and begin organizing your team in minutes.
         </p>
 
         <form className="mt-8 grid gap-5 md:grid-cols-2" onSubmit={handleSubmit}>
@@ -80,7 +80,7 @@ const SignupPage = () => {
 
         <p className="mt-6 text-sm text-slate-600 dark:text-slate-300">
           Already registered?{" "}
-          <Link to="/login" className="font-semibold text-brand-500">
+          <Link to="/login" className="font-semibold text-indigo-600">
             Login here
           </Link>
         </p>

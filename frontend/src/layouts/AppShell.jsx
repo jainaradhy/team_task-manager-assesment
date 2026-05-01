@@ -23,7 +23,7 @@ const AppShell = ({ children }) => {
           <button
             type="button"
             onClick={() => setIsSidebarOpen(true)}
-            className="glass-panel fixed left-4 top-4 z-20 rounded-2xl p-3 lg:hidden"
+            className="glass-panel fixed left-4 top-4 z-20 rounded-lg p-3 lg:hidden"
           >
             <Menu size={20} />
           </button>

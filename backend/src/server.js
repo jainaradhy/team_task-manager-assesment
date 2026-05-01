@@ -9,6 +9,6 @@ await seedDemoData();
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`🔑 Demo login: admin@acme.dev / Admin@1234 (Owner)`);
-  console.log(`🔑 Demo login: alice@acme.dev  / Member@1234 (Member)`);
+  console.log(`🔑 Demo login: aradhy@bharat.dev / Admin@1234 (Owner)`);
+  console.log(`🔑 Demo login: rahul@bharat.dev  / Member@1234 (Member)`);
 });

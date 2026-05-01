@@ -57,9 +57,13 @@ export const mongoIdParamValidation = [
 ];
 
 export const taskQueryValidation = [
-  query("projectId").optional().isString().withMessage("Project filter must be valid"), // Replaced isMongoId with isString
-  query("status").optional().isIn(["Todo", "In Progress", "Done"]).withMessage("Invalid status filter"),
-  query("assignedTo").optional().isString().withMessage("Assignee filter must be valid"), // Replaced isMongoId with isString
-  query("page").optional().isInt({ min: 1 }).withMessage("Page must be at least 1"),
-  query("limit").optional().isInt({ min: 1, max: 50 }).withMessage("Limit must be between 1 and 50"),
+  query("projectId").optional({ checkFalsy: true }).isString().withMessage("Project filter must be valid"),
+  query("status").optional({ checkFalsy: true }).isIn(["Todo", "In Progress", "Done"]).withMessage("Invalid status filter"),
+  query("priority").optional({ checkFalsy: true }).isIn(["Low", "Medium", "High"]).withMessage("Invalid priority filter"),
+  query("search").optional({ checkFalsy: true }).isString().withMessage("Search must be a string"),
+  query("sortBy").optional({ checkFalsy: true }).isIn(["dueDate", "priority", "createdAt"]).withMessage("Invalid sort field"),
+  query("sortOrder").optional({ checkFalsy: true }).isIn(["asc", "desc"]).withMessage("Invalid sort order"),
+  query("assignedTo").optional({ checkFalsy: true }).isString().withMessage("Assignee filter must be valid"),
+  query("page").optional({ checkFalsy: true }).isInt({ min: 1 }).withMessage("Page must be at least 1"),
+  query("limit").optional({ checkFalsy: true }).isInt({ min: 1, max: 100 }).withMessage("Limit must be between 1 and 100"),
 ];

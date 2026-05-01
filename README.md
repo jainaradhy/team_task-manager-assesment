@@ -1,90 +1,87 @@
-# Team Task Manager (SaaS Edition)
+# Bharat Task Manager (SaaS Edition) 🇮🇳
 
-A production-ready, multi-tenant B2B Task Management platform built with React, Node.js, Express, and Prisma (SQLite).
+A production-ready, multi-tenant B2B Task Management platform built for high-performing teams. This edition features the **Bharat Tech Solutions** localized demo workspace.
 
-## 🚀 Features
+---
 
-* **Multi-Tenant Architecture:** Users can create isolated Workspaces for their companies.
-* **Role-Based Access Control:** Admin (Workspace Owner) and Member roles with specific permissions.
-* **Modern Kanban Board:** Drag-and-drop task management with color-coded priority and status badges.
-* **Advanced Filtering & Sorting:** Search tasks, filter by project/status/priority, and sort by due date or priority.
-* **Real-time Dashboard:** Track project progress, pending tasks, overdue tasks, and recent workspace activity.
+## 🚀 Key Features
+
+* **Dual View Workflow:** Switch between a modern **Kanban Board** for visual execution and a detailed **Table View** for tabular task management.
+* **Multi-Tenant Architecture:** Built for scale, allowing users to create isolated Workspaces for their organizations.
+* **Human-Mind UI:** A premium, high-contrast light theme optimized for utility and readability.
+* **Role-Based Access (RBAC):** Strict permissions for Admin (Owner) and Member roles to ensure data integrity.
+* **Activity Logs:** Real-time tracking of workspace changes (Project creation, Task updates, Member changes).
+
+---
 
 ## ⚡ Tech Stack
 
-* **Frontend:** React.js (Vite), Tailwind CSS, Axios, React Router Dom
+* **Frontend:** React.js (Vite), Tailwind CSS, Framer Motion, Lucide Icons
 * **Backend:** Node.js, Express.js
-* **Database:** SQLite (Relational SQL) managed via Prisma ORM
-* **Authentication:** JWT (JSON Web Tokens) with bcrypt password hashing
+* **Database:** SQLite (Relational) via Prisma ORM
+* **Security:** JWT Auth with Bcrypt hashing, Helmet.js for header protection
 
-## 🛠️ Local Setup Instructions
+---
 
-### 1. Backend Setup
+## 🔑 Demo Credentials (Bharat Tech Solutions)
+
+Skip the signup and test the platform immediately:
+
+| Role | Email | Password |
+| :--- | :--- | :--- |
+| **Admin / Owner** | `aradhy@bharat.dev` | `Admin@1234` |
+| **Team Member** | `rahul@bharat.dev` | `Member@1234` |
+
+---
+
+## 🛠️ Local Setup
+
+### 1. Backend
 ```bash
 cd backend
 npm install
-# Create an .env file
-echo 'PORT=5001' > .env
-echo 'DATABASE_URL="file:./dev.db"' >> .env
-echo 'JWT_SECRET="your-super-secret-key"' >> .env
-
-# Push the database schema and seed the demo data
+# Create .env with:
+# PORT=5001
+# DATABASE_URL="file:./dev.db"
+# JWT_SECRET="your-secret"
 npx prisma db push
-node src/config/seed.js
-
-# Start the development server
 npm run dev
 ```
 
-### 2. Frontend Setup
+### 2. Frontend
 ```bash
 cd frontend
 npm install
-# Create an .env file
-echo 'VITE_API_BASE_URL=http://localhost:5001/api' > .env
-
-# Start the Vite development server
+# Create .env with:
+# VITE_API_BASE_URL=http://localhost:5001/api
 npm run dev
 ```
 
-## 🔗 API Endpoints
+---
 
-### Authentication
-* `POST /api/auth/register` - Create a new user and Workspace
-* `POST /api/auth/login` - Authenticate and receive JWT
+## 🔗 API Documentation
 
-### Dashboard
-* `GET /api/dashboard/summary` - Get workspace stats and recent activity
+### Auth
+- `POST /api/auth/register` - Signup + Workspace creation
+- `POST /api/auth/login` - Localized demo login
 
-### Projects
-* `POST /api/projects` - Create a new project (Admin)
-* `GET /api/projects` - List accessible projects
-* `GET /api/projects/:id` - Get project details
-* `PATCH /api/projects/:id/members` - Update team members (Admin)
-* `DELETE /api/projects/:id` - Delete project (Admin)
+### Workspace & Projects
+- `GET /api/dashboard/summary` - Analytics & Activity Feed
+- `GET /api/projects` - List workspace projects
+- `POST /api/projects` - Admin-only project creation
 
-### Tasks
-* `POST /api/tasks` - Create a task
-* `GET /api/tasks` - List tasks with pagination, sorting, and filtering
-* `PATCH /api/tasks/:id` - Update task status/priority
-* `DELETE /api/tasks/:id` - Delete a task (Admin)
+### Task Management
+- `GET /api/tasks` - Advanced search, filter, and sort
+- `PATCH /api/tasks/:id` - Status/Priority updates
+- `DELETE /api/tasks/:id` - Admin-only deletion
+
+---
 
 ## 🚀 Deployment Guide
+See the detailed **[DEPLOYMENT.md](./DEPLOYMENT.md)** file for a step-by-step guide on hosting this on **Railway.app**.
 
-### Deploying Frontend to Vercel
-1. Push your code to GitHub.
-2. Go to [Vercel](https://vercel.com/) and import the repository.
-3. Set the **Framework Preset** to `Vite`.
-4. Set the **Root Directory** to `frontend`.
-5. Add the Environment Variable: `VITE_API_BASE_URL` (pointing to your live backend URL).
-6. Click Deploy.
+---
 
-### Deploying Backend to Railway
-1. Go to [Railway](https://railway.app/) and create a new project from your GitHub repo.
-2. Set the **Root Directory** to `backend`.
-3. Go to Variables and add:
-   * `PORT` = `5001`
-   * `JWT_SECRET` = `your-production-secret-key`
-   * `DATABASE_URL` = `file:/data/dev.db`
-4. **CRITICAL FOR SQLITE:** You must add a **Persistent Volume** in Railway mounted to `/data` so your database isn't wiped on every deployment.
-5. Set your custom Start Command to: `npx prisma db push && node src/server.js`
+### 👨‍💻 Note for Recruiters
+This project was built with a focus on **Clean Architecture**, **Responsive Design**, and **Security**. The frontend avoids generic templates, favoring a custom-crafted design system built with Tailwind CSS.
+

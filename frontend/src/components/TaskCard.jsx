@@ -14,7 +14,7 @@ const TaskCard = ({
   <div
     draggable={draggable}
     onDragStart={(event) => onDragStart?.(task, event)}
-    className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900"
+    className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-lg dark:border-slate-700 dark:bg-slate-900"
   >
     <div className="flex items-start justify-between gap-3">
       <div>
@@ -57,14 +57,14 @@ const TaskCard = ({
           <button
             type="button"
             onClick={() => onEdit?.(task)}
-            className="rounded-2xl p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
+            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
           >
             <Pencil size={16} />
           </button>
           <button
             type="button"
             onClick={() => onDelete?.(task)}
-            className="rounded-2xl p-2 text-rose-500 transition hover:bg-rose-50 dark:hover:bg-rose-500/10"
+            className="rounded-lg p-2 text-rose-500 transition hover:bg-rose-50 dark:hover:bg-rose-500/10"
           >
             <Trash2 size={16} />
           </button>

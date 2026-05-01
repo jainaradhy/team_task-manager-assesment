@@ -121,11 +121,73 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Pricing Section */}
+      <section id="pricing" className="py-24 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl lg:text-center mb-16">
+            <h2 className="text-base font-semibold text-indigo-600 uppercase tracking-wide">Pricing</h2>
+            <p className="mt-2 text-3xl font-extrabold text-slate-900 sm:text-4xl">Simple, transparent pricing</p>
+          </div>
+          
+          <div className="mx-auto grid max-w-lg gap-8 lg:max-w-none lg:grid-cols-3">
+            {[
+              { name: "Starter", price: "$0", features: ["Up to 3 projects", "Unlimited members", "Kanban boards"], btn: "Get Started" },
+              { name: "Pro", price: "$19", features: ["Unlimited projects", "Task priorities", "Analytics dashboard"], btn: "Try Pro", popular: true },
+              { name: "Enterprise", price: "Custom", features: ["SSO Login", "Audit logs", "Priority support"], btn: "Contact Sales" }
+            ].map((plan) => (
+              <div key={plan.name} className={`relative flex flex-col rounded-2xl border p-8 shadow-sm ${plan.popular ? "border-indigo-600 ring-1 ring-indigo-600" : "border-slate-200"}`}>
+                {plan.popular && (
+                  <span className="absolute top-0 -translate-y-1/2 rounded-full bg-indigo-600 px-3 py-1 text-xs font-bold uppercase text-white">Most Popular</span>
+                )}
+                <h3 className="text-xl font-bold text-slate-900">{plan.name}</h3>
+                <p className="mt-4 flex items-baseline gap-1">
+                  <span className="text-4xl font-extrabold text-slate-900">{plan.price}</span>
+                  {plan.price !== "Custom" && <span className="text-slate-500">/mo</span>}
+                </p>
+                <ul className="mt-8 space-y-4 flex-1">
+                  {plan.features.map(f => (
+                    <li key={f} className="flex items-center gap-3 text-sm text-slate-600">
+                      <CheckCircle2 size={16} className="text-indigo-600" /> {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/signup" className={`mt-8 block rounded-md px-6 py-3 text-center text-sm font-bold transition ${plan.popular ? "bg-indigo-600 text-white hover:bg-indigo-700" : "bg-slate-100 text-slate-900 hover:bg-slate-200"}`}>
+                  {plan.btn}
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-indigo-600 py-16 sm:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Ready to streamline your workflow?</h2>
+          <p className="mx-auto mt-6 max-w-xl text-lg text-indigo-100">
+            Join thousands of teams shipping faster every day with TaskManager. No credit card required.
+          </p>
+          <div className="mt-10 flex justify-center gap-4">
+            <Link to="/signup" className="rounded-md bg-white px-8 py-3 text-base font-bold text-indigo-600 hover:bg-indigo-50 transition">
+              Get Started for Free
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="border-t border-slate-200 py-12 text-center bg-white">
-        <p className="text-sm text-slate-500">
-          © {new Date().getFullYear()} TaskManager. Built for modern teams.
-        </p>
+      <footer className="border-t border-slate-200 py-12 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-indigo-600 text-white">
+              <Layout size={14} />
+            </div>
+            <span className="font-bold text-slate-900">TaskManager</span>
+          </div>
+          <p className="text-sm text-slate-500">
+            © {new Date().getFullYear()} TaskManager. All rights reserved.
+          </p>
+        </div>
       </footer>
     </div>
   );
