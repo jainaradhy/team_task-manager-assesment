@@ -41,15 +41,10 @@ app.use("/api/projects", projectRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-// Production: Serve static assets from frontend
-if (process.env.NODE_ENV === "production") {
-  const frontendPath = path.join(__dirname, "../../frontend/dist");
-  app.use(express.static(frontendPath));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(frontendPath, "index.html"));
-  });
-}
+// Production: Remove static serving since we are using two-service deployment
+app.get("/", (req, res) => {
+  res.json({ message: "Task Manager Backend API is running." });
+});
 
 app.use(notFound);
 app.use(errorHandler);
