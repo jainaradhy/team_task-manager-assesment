@@ -10,10 +10,31 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 
 const app = express();
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "http://localhost:5174",
+].filter(Boolean);
 
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174"].filter(Boolean),
+    origin(origin, callback) {
+      let hostname = "";
+
+      if (origin) {
+        try {
+          hostname = new URL(origin).hostname;
+        } catch {
+          return callback(new Error("Not allowed by CORS"));
+        }
+      }
+
+      if (!origin || allowedOrigins.includes(origin) || /\.up\.railway\.app$/.test(hostname)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
