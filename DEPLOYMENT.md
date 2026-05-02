@@ -27,13 +27,13 @@ Once the project is created, Railway will likely detect the root. We want to con
 5. **Variables:** Go to the **Variables** tab and add:
    - `PORT`: `5001`
    - `JWT_SECRET`: `your_super_secret_key_here`
-   - `MONGODB_URI`: your MongoDB Atlas or Railway MongoDB connection string
+   - `MONGODB_URI`: `mongodb+srv://jainaradhy2004_db_user:<db_password>@cluster0.ywarbjq.mongodb.net/<dbname>?retryWrites=true&w=majority`
    - `JWT_EXPIRES_IN`: `7d`
    - `NODE_ENV`: `production`
 
 > [!IMPORTANT]
-> **MongoDB Required:** 
-> The backend now connects only through `MONGODB_URI`. Use MongoDB Atlas, Railway MongoDB, or another MongoDB-compatible service.
+> **MongoDB Required:**
+> The backend now connects only through `MONGODB_URI`. Replace `<db_password>` with your Atlas password and `<dbname>` with the database name you want to use. Use MongoDB Atlas, Railway MongoDB, or another MongoDB-compatible service.
 
 ---
 

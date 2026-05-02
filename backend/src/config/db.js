@@ -5,7 +5,14 @@ let mongod = null;
 
 export const connectDatabase = async () => {
   try {
-    let uri = process.env.MONGODB_URI;
+    const uri = process.env.MONGODB_URI?.trim();
+
+    if (!uri) {
+      throw new Error(
+        "MONGODB_URI is not set. Set the MongoDB Atlas connection string in your environment variables."
+      );
+    }
+
     console.log("⏳ Connecting to MongoDB...");
     try {
       await mongoose.connect(uri, { serverSelectionTimeoutMS: 5000 });
@@ -15,8 +22,8 @@ export const connectDatabase = async () => {
         console.log("⚠️ MongoDB connection failed. Starting In-Memory MongoDB...");
         await mongoose.disconnect();
         mongod = await MongoMemoryServer.create();
-        uri = mongod.getUri();
-        await mongoose.connect(uri);
+        const fallbackUri = mongod.getUri();
+        await mongoose.connect(fallbackUri);
         console.log("✅ MongoDB connected (In-Memory)");
       } else {
         throw err;
