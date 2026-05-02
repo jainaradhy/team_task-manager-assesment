@@ -53,7 +53,7 @@ Once the project is created, Railway will likely detect the root. We want to con
    - `VITE_API_BASE_URL`: `https://backend-your-project.up.railway.app/api`
    *(Replace with the actual URL Railway generates for your backend service).*
 
-> Important: this value must point to your deployed backend service. If frontend and backend are separate Railway services, do not leave this blank or use `/api` alone.
+> Important: this value must point to your deployed backend service. If frontend and backend are separate Railway services, do not leave this blank or use `/api` alone. Without this, your frontend will attempt `/api/auth/login` on the frontend host and return 404.
 
 6. **Build Command:** `npm install && npm run build`
 7. **Start Command:** Railway will automatically serve the `dist` folder if it detects Vite/React, otherwise use: `npx serve -s dist`
