@@ -61,6 +61,37 @@ npm run dev -- --port 5174
 
 ---
 
+## 🚀 Production Deployment
+If you deploy frontend and backend separately (for example, on Railway), be sure to configure the deployment environment variables exactly as follows:
+
+- **Backend**
+  - `MONGODB_URI`: your MongoDB Atlas connection string, e.g. `mongodb+srv://<user>:<password>@cluster0.yourcluster.mongodb.net/<dbname>?retryWrites=true&w=majority`
+  - `JWT_SECRET`: a strong random secret
+  - `JWT_EXPIRES_IN`: `7d`
+  - `CLIENT_URL`: your deployed frontend URL, e.g. `https://overflowing-gratitude-production-6255.up.railway.app`
+  - `NODE_ENV`: `production`
+
+- **Frontend**
+  - `VITE_API_BASE_URL`: your deployed backend URL including `/api`, e.g. `https://<backend-service>.up.railway.app/api`
+
+> Important: If `VITE_API_BASE_URL` is not set in production, the frontend may try to call `/api/auth/login` on the frontend origin and return `404`.
+
+- **MongoDB Atlas**
+  - Make sure your cluster network access allows the connector IPs used by your deployment platform.
+  - For testing, add `0.0.0.0/0` temporarily in Atlas IP Access List.
+
+- **Password encoding**
+  - If your Atlas password contains special characters like `@` or `#`, URL-encode them in the URI:
+    - `@` → `%40`
+    - `#` → `%23`
+
+Example backend URI:
+```text
+mongodb+srv://jainaradhy2004_db_user:07032004Ja%40%23@cluster0.ywarbjq.mongodb.net/task_manager?retryWrites=true&w=majority
+```
+
+---
+
 ## 🏗️ System Architecture
 
 The application follows a **Modular Monolith** pattern on the backend and a **Context-Driven State Management** approach on the frontend:
