@@ -1,85 +1,81 @@
-# Bharat Task Manager (SaaS Edition) 🇮🇳
+# 🌌 TaskFlow: Enterprise Task Management (Premium Edition)
 
-A production-ready, multi-tenant B2B Task Management platform built for high-performing teams. This edition features the **Bharat Tech Solutions** localized demo workspace.
-
----
-
-## 🚀 Key Features
-
-* **Dual View Workflow:** Switch between a modern **Kanban Board** for visual execution and a detailed **Table View** for tabular task management.
-* **Multi-Tenant Architecture:** Built for scale, allowing users to create isolated Workspaces for their organizations.
-* **Human-Mind UI:** A premium, high-contrast light theme optimized for utility and readability.
-* **Role-Based Access (RBAC):** Strict permissions for Admin (Owner) and Member roles to ensure data integrity.
-* **Activity Logs:** Real-time tracking of workspace changes (Project creation, Task updates, Member changes).
+A high-performance, visually stunning B2B Task Management platform designed for modern product teams. Built with **React**, **Node.js**, and **MongoDB**, featuring a custom-crafted design system and fluid motion design.
 
 ---
 
-## ⚡ Tech Stack
+## ✨ The Premium Experience
 
-* **Frontend:** React.js (Vite), Tailwind CSS, Framer Motion, Lucide Icons
-* **Backend:** Node.js, Express.js
-* **Database:** MongoDB via Mongoose
-* **Security:** JWT Auth with Bcrypt hashing, Helmet.js for header protection
+*   **🎭 Motion Design System**: Powered by **Framer Motion** for staggered entrance animations, layout transitions, and tactile hover feedback.
+*   **🌓 Adaptive Design**: Sophisticated glassmorphism-based UI with deep dark mode support and ultra-crisp typography.
+*   **📊 Executive Analytics**: Real-time dashboard with task distribution charts, work ratio metrics, and live activity streams.
+*   **🧩 Smart Kanban Engine**: Interactive drag-and-drop workflow with smooth `popLayout` transitions and color-coded priority systems.
+*   **🏢 Enterprise RBAC**: Multi-tenant workspace architecture with granular permissions for Admins and Members.
+*   **⚡ High-Velocity Filtering**: Instant server-side search, filtering, and sorting for managing complex project backlogs.
 
 ---
 
-## 🔑 Demo Credentials (Bharat Tech Solutions)
+## 🛠️ Technology Stack
 
-Skip the signup and test the platform immediately:
+| Layer | Technologies |
+| :--- | :--- |
+| **Frontend** | React 18, Vite, Tailwind CSS, Framer Motion, Lucide Icons, Axios |
+| **Backend** | Node.js, Express.js, Express Validator, Morgan, Helmet |
+| **Database** | MongoDB (Mongoose), MongoMemoryServer (Dev Fallback) |
+| **Security** | JWT Authentication, Bcrypt Hashing, CORS Protection |
+
+---
+
+## 🔑 Demo Access (Bharat Tech Solutions)
+
+Test the enterprise workspace immediately with pre-seeded data:
 
 | Role | Email | Password |
 | :--- | :--- | :--- |
-| **Admin / Owner** | `aradhy@bharat.dev` | `Admin@1234` |
-| **Team Member** | `rahul@bharat.dev` | `Member@1234` |
+| **Workspace Admin** | `aradhy@bharat.dev` | `Admin@1234` |
+| **Senior Member** | `rahul@bharat.dev` | `Member@1234` |
 
 ---
 
-## 🛠️ Local Setup
+## 🚀 Quick Start
 
-### 1. Backend
+### 📦 Prerequisites
+- Node.js (v18+)
+- MongoDB (or it will automatically fallback to an In-Memory DB)
+
+### 1. Backend Setup
 ```bash
 cd backend
 npm install
-# Create .env with:
-# PORT=5001
-# MONGODB_URI=mongodb://localhost:27017/team-task-manager
-# JWT_SECRET="your-secret"
-npm run dev
+# Configure .env (see .env.example)
+npm start
 ```
 
-### 2. Frontend
+### 2. Frontend Setup
 ```bash
 cd frontend
 npm install
-# Create .env with:
-# VITE_API_BASE_URL=http://localhost:5001/api
-npm run dev
+# Configure .env (see .env.example)
+npm run dev -- --port 5174
 ```
 
 ---
 
-## 🔗 API Documentation
+## 🏗️ System Architecture
 
-### Auth
-- `POST /api/auth/register` - Signup + Workspace creation
-- `POST /api/auth/login` - Localized demo login
+The application follows a **Modular Monolith** pattern on the backend and a **Context-Driven State Management** approach on the frontend:
 
-### Workspace & Projects
-- `GET /api/dashboard/summary` - Analytics & Activity Feed
-- `GET /api/projects` - List workspace projects
-- `POST /api/projects` - Admin-only project creation
-
-### Task Management
-- `GET /api/tasks` - Advanced search, filter, and sort
-- `PATCH /api/tasks/:id` - Status/Priority updates
-- `DELETE /api/tasks/:id` - Admin-only deletion
+- **Frontend**: Clean component separation with a unified Design System in `index.css`.
+- **Backend**: Layered architecture (Routes -> Middlewares -> Controllers -> Models).
+- **Security**: All API routes are protected by a JWT-based `authMiddleware` and validated via `express-validator`.
 
 ---
 
-## 🚀 Deployment Guide
-See the detailed **[DEPLOYMENT.md](./DEPLOYMENT.md)** file for a step-by-step guide on hosting this on **Railway.app**.
+## 👨‍💻 Recruitment Note
+
+This project demonstrates proficiency in **Full-Stack Engineering**, **Motion Design**, and **Security Best Practices**. It focuses on creating a "SaaS-ready" product feel, moving beyond standard CRUD functionality to provide a truly interactive and responsive user experience.
 
 ---
 
-### 👨‍💻 Note for Recruiters
-This project was built with a focus on **Clean Architecture**, **Responsive Design**, and **Security**. The frontend avoids generic templates, favoring a custom-crafted design system built with Tailwind CSS.
+**Built with ❤️ by Aradhy Jain**
+# team_task-manager-assesment
