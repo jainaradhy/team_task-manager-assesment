@@ -35,6 +35,13 @@ Once the project is created, Railway will likely detect the root. We want to con
 > **MongoDB Required:**
 > The backend now connects only through `MONGODB_URI`. Replace `<db_password>` with your Atlas password and `<dbname>` with the database name you want to use. Use MongoDB Atlas, Railway MongoDB, or another MongoDB-compatible service.
 
+> [!IMPORTANT]
+> **Atlas Network Access:** Your MongoDB Atlas cluster must allow access from Railway. In Atlas, go to Network Access and add either:
+> - `0.0.0.0/0` (not recommended long-term, but works for deployment), or
+> - the specific IP address/Railway host currently connecting.
+>
+> If Atlas does not permit your backend connection, you’ll get this error: `Could not connect to any servers in your MongoDB Atlas cluster`.
+
 ---
 
 ## 💻 Step 4: Configure the Frontend Service
@@ -45,6 +52,9 @@ Once the project is created, Railway will likely detect the root. We want to con
 5. **Variables:** Add:
    - `VITE_API_BASE_URL`: `https://backend-your-project.up.railway.app/api`
    *(Replace with the actual URL Railway generates for your backend service).*
+
+> Important: this value must point to your deployed backend service. If frontend and backend are separate Railway services, do not leave this blank or use `/api` alone.
+
 6. **Build Command:** `npm install && npm run build`
 7. **Start Command:** Railway will automatically serve the `dist` folder if it detects Vite/React, otherwise use: `npx serve -s dist`
 
