@@ -11,7 +11,7 @@ export const signupValidation = [
     .isLength({ min: 8 })
     .withMessage("Password must be at least 8 characters")
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
-    .withMessage("Password must include uppercase, lowercase, and a number"),
+    .withMessage("Password must include uppercase, lowercase, and a number (e.g. Password123)"),
   body("role").optional().isIn(["Admin", "Member"]).withMessage("Role must be Admin or Member"),
 ];
 
@@ -37,14 +37,14 @@ export const taskCreateValidation = [
   body("description").trim().notEmpty().withMessage("Description is required"),
   body("projectId").isMongoId().withMessage("Valid project is required"),
   body("assignedTo").isMongoId().withMessage("Valid assignee is required"),
-  body("status").optional().isIn(["Todo", "In Progress", "Done"]).withMessage("Invalid status"),
+  body("status").optional().isIn(["To Do", "In Progress", "Done"]).withMessage("Invalid status"),
   body("priority").optional().isIn(["Low", "Medium", "High"]).withMessage("Invalid priority"),
   body("dueDate").notEmpty().withMessage("Due date is required").isISO8601().withMessage("Due date must be a valid date"),
 ];
 
 export const taskUpdateValidation = [
   param("id").isMongoId().withMessage(objectIdMessage),
-  body("status").optional().isIn(["Todo", "In Progress", "Done"]).withMessage("Invalid status"),
+  body("status").optional().isIn(["To Do", "In Progress", "Done"]).withMessage("Invalid status"),
   body("priority").optional().isIn(["Low", "Medium", "High"]).withMessage("Invalid priority"),
   body("title").optional().trim().notEmpty().withMessage("Title cannot be empty"),
   body("description").optional().trim().notEmpty().withMessage("Description cannot be empty"),
@@ -58,7 +58,7 @@ export const mongoIdParamValidation = [
 
 export const taskQueryValidation = [
   query("projectId").optional({ checkFalsy: true }).isMongoId().withMessage("Project filter must be valid"),
-  query("status").optional({ checkFalsy: true }).isIn(["Todo", "In Progress", "Done"]).withMessage("Invalid status filter"),
+  query("status").optional({ checkFalsy: true }).isIn(["To Do", "In Progress", "Done"]).withMessage("Invalid status filter"),
   query("priority").optional({ checkFalsy: true }).isIn(["Low", "Medium", "High"]).withMessage("Invalid priority filter"),
   query("search").optional({ checkFalsy: true }).isString().withMessage("Search must be a string"),
   query("sortBy").optional({ checkFalsy: true }).isIn(["dueDate", "priority", "createdAt"]).withMessage("Invalid sort field"),

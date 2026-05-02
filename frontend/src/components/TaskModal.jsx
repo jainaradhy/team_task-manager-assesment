@@ -8,7 +8,7 @@ const initialState = {
   projectId: "",
   assignedTo: "",
   dueDate: "",
-  status: "Todo",
+  status: "To Do",
   priority: "Medium",
 };
 

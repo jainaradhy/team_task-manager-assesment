@@ -16,6 +16,22 @@ import { getUsers } from "../services/userService";
 import { getErrorMessage } from "../utils/helpers";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 }
+};
 
 const ProjectsPage = () => {
   const navigate = useNavigate();
@@ -91,45 +107,74 @@ const ProjectsPage = () => {
       {isLoading ? (
         <LoadingSpinner label="Loading projects..." />
       ) : (
-        <div className="space-y-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-indigo-600">Projects</p>
-              <h1 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">Team delivery hub</h1>
-              <p className="mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-300">
-                Track progress, manage membership, and jump into project-specific execution from a single view.
+        <motion.div 
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="space-y-8"
+        >
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <motion.div variants={item}>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-indigo-600">Projects</p>
+              <h1 className="mt-2 text-4xl font-black text-slate-900 dark:text-white tracking-tight">Team Hub</h1>
+              <p className="mt-3 max-w-2xl text-sm font-medium text-slate-500 dark:text-slate-400">
+                Manage your workspace delivery channels and team membership from one central dashboard.
               </p>
-            </div>
+            </motion.div>
             {canManage && (
-              <button type="button" onClick={() => setIsProjectModalOpen(true)} className="primary-button gap-2">
-                <Plus size={18} />
+              <motion.button 
+                variants={item}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                type="button" 
+                onClick={() => setIsProjectModalOpen(true)} 
+                className="primary-button gap-2 py-4 px-8 shadow-xl shadow-indigo-600/20"
+              >
+                <Plus size={20} strokeWidth={3} />
                 New Project
-              </button>
+              </motion.button>
             )}
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {projects.map((project) => (
-              <ProjectCard
-                key={project._id}
-                project={project}
-                canManage={canManage}
-                onOpen={() => navigate(`/tasks?projectId=${project._id}`)}
-                onDelete={handleDeleteProject}
-                onManageMembers={(projectItem) => {
-                  setSelectedProject(projectItem);
-                  setIsMembersModalOpen(true);
-                }}
-              />
-            ))}
-          </div>
+          <motion.div 
+            variants={container}
+            className="grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+          >
+            <AnimatePresence mode="popLayout">
+              {projects.map((project) => (
+                <motion.div key={project._id} variants={item} layout>
+                  <ProjectCard
+                    project={project}
+                    canManage={canManage}
+                    onOpen={() => navigate(`/tasks?projectId=${project._id}`)}
+                    onDelete={handleDeleteProject}
+                    onManageMembers={(projectItem) => {
+                      setSelectedProject(projectItem);
+                      setIsMembersModalOpen(true);
+                    }}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
 
           {!projects.length && (
-            <div className="glass-panel p-10 text-center text-sm text-slate-500 dark:text-slate-400">
-              No projects yet. {canManage ? "Create your first project to get started." : "Ask an admin to add you to a project."}
-            </div>
+            <motion.div variants={item} className="glass-panel p-20 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-900 text-slate-400 mb-6">
+                <Plus size={32} />
+              </div>
+              <p className="text-lg font-bold text-slate-900 dark:text-white">No projects found</p>
+              <p className="mt-2 text-sm text-slate-500">
+                {canManage ? "Ready to start shipping? Create your first project." : "Ask an admin to assign you to a project."}
+              </p>
+              {canManage && (
+                <button onClick={() => setIsProjectModalOpen(true)} className="mt-8 secondary-button mx-auto">
+                  Get Started
+                </button>
+              )}
+            </motion.div>
           )}
-        </div>
+        </motion.div>
       )}
 
       <ProjectModal

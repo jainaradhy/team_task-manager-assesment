@@ -90,7 +90,7 @@ export const seedDemoData = async () => {
         workspaceId: workspace._id,
         projectId: project1._id,
         assignedTo: priya._id,
-        status: "Todo",
+        status: "To Do",
         dueDate: inDays(7),
       },
       {
@@ -99,7 +99,7 @@ export const seedDemoData = async () => {
         workspaceId: workspace._id,
         projectId: project1._id,
         assignedTo: priya._id,
-        status: "Todo",
+        status: "To Do",
         dueDate: inDays(10),
       },
       {

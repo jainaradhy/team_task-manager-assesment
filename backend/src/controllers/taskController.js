@@ -52,7 +52,7 @@ export const createTask = asyncHandler(async (req, res) => {
     workspaceId,
     assignedTo,
     dueDate: new Date(dueDate),
-    status: status || "Todo",
+    status: status || "To Do",
     priority: priority || "Medium",
   });
 

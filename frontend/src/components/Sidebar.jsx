@@ -1,11 +1,13 @@
-import { FolderKanban, LayoutDashboard, LogOut, PanelLeftClose, UserSquare2 } from "lucide-react";
+import { FolderKanban, LayoutDashboard, LogOut, PanelLeftClose, UserSquare2, Users } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { motion } from "framer-motion";
 
 const navigation = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/projects", label: "Projects", icon: FolderKanban },
   { to: "/tasks", label: "Task Board", icon: UserSquare2 },
+  { to: "/team", label: "Team", icon: Users },
 ];
 
 const Sidebar = ({ isOpen, onToggle }) => {
@@ -31,20 +33,21 @@ const Sidebar = ({ isOpen, onToggle }) => {
         {navigation.map((item) => {
           const Icon = item.icon;
           return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition ${
-                  isActive
-                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                }`
-              }
-            >
-              <Icon size={18} />
-              <span>{item.label}</span>
-            </NavLink>
+            <motion.div key={item.to} whileHover={{ x: 4 }} whileTap={{ scale: 0.98 }}>
+              <NavLink
+                to={item.to}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-semibold transition ${
+                    isActive
+                      ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/30"
+                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                  }`
+                }
+              >
+                <Icon size={18} />
+                <span>{item.label}</span>
+              </NavLink>
+            </motion.div>
           );
         })}
       </nav>

@@ -6,6 +6,7 @@ import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import TaskBoardPage from "./pages/TaskBoardPage";
+import TeamPage from "./pages/TeamPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import { useAuth } from "./hooks/useAuth";
 
@@ -22,6 +23,7 @@ const App = () => {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/tasks" element={<TaskBoardPage />} />
+        <Route path="/team" element={<TeamPage />} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

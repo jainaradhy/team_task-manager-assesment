@@ -30,6 +30,10 @@ const SignupPage = () => {
         <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
           Provision your secure workspace and begin organizing your team in minutes.
         </p>
+        <div className="mt-4 rounded-xl bg-amber-50 p-4 border border-amber-100 dark:bg-amber-900/20 dark:border-amber-900/30">
+          <p className="text-[10px] font-black uppercase tracking-widest text-amber-700 dark:text-amber-400">Security Requirement</p>
+          <p className="mt-1 text-xs font-medium text-amber-600 dark:text-amber-500/80">Password must be at least 8 characters and include uppercase, lowercase, and a number.</p>
+        </div>
 
         <form className="mt-8 grid gap-5 md:grid-cols-2" onSubmit={handleSubmit}>
           <div>

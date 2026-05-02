@@ -5,3 +5,13 @@ export const getUsers = async () => {
   return data;
 };
 
+export const addMember = async (payload) => {
+  const { data } = await api.post("/users", payload);
+  return data;
+};
+
+export const removeMember = async (userId) => {
+  const { data } = await api.delete(`/users/${userId}`);
+  return data;
+};
+

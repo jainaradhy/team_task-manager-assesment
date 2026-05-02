@@ -10,7 +10,7 @@ const activityLogSchema = new mongoose.Schema(
     },
     action: {
       type: String,
-      required: true,
+      required: false,
     },
     entityType: {
       type: String,

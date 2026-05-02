@@ -1,6 +1,6 @@
 import { ActivityLog, Project, ProjectTeam, Task } from "../models/index.js";
 import { asyncHandler } from "../middleware/asyncHandler.js";
-import { formatActivity, formatTask } from "../utils/formatters.js";
+import { formatActivity, formatTask, idOf } from "../utils/formatters.js";
 
 export const getDashboardSummary = asyncHandler(async (req, res) => {
   const workspaceId = req.user.workspaceId;
@@ -43,6 +43,20 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
     (task) => task.status !== "Done" && new Date(task.dueDate) < now
   ).length;
 
+  let tasksPerUser = [];
+  if (req.user.role === "Admin") {
+    const userMap = {};
+    allTasks.forEach((task) => {
+      const userId = idOf(task.assignedTo);
+      const userName = task.assignedTo?.name || "Unassigned";
+      if (!userMap[userId]) {
+        userMap[userId] = { name: userName, count: 0 };
+      }
+      userMap[userId].count += 1;
+    });
+    tasksPerUser = Object.values(userMap).sort((a, b) => b.count - a.count);
+  }
+
   res.json({
     stats: {
       totalTasks: allTasks.length,
@@ -52,6 +66,7 @@ export const getDashboardSummary = asyncHandler(async (req, res) => {
       assignedToMe: myTasks.length,
       totalProjects: projects.length,
     },
+    tasksPerUser,
     myTasks: myTasks.map(formatTask),
     recentActivity: rawRecentActivity.map(formatActivity),
   });
